@@ -9,10 +9,12 @@ const express = require('express')
 const cors = require('cors')
 const Logger = require('./api/utils/logger')
 const logger = new Logger('app')
+const cookieParser = require('cookie-parser')
 
 const app = express()
-app.use(cors())
+app.use(cookieParser())
 app.use(express.json({ limit : '8mb' }))
+app.use(cors())
 
 //Env Conf
 const HTTP_PORT = process.env.HTTP_PORT
@@ -45,9 +47,16 @@ let transporter = nodemailer.createTransport({
     }
 });
 
+exports.SMTP_SERVER_STATUS = 'pedding..'
 transporter.verify((err, s) => {
-    if (!err) logger.info('SMTP Server sucessfull connected! ', s.toString())
-    else logger.error('Error after create transport SMTP Server', err.toString())
+    if (!err) {
+        logger.info('SMTP Server sucessfull connected! ', s.toString())
+        exports.SMTP_SERVER_STATUS = 'success!'
+    }
+    else {
+        logger.error('Error after create transport SMTP Server', err.toString())
+        exports.SMTP_SERVER_STATUS = 'error!'
+    }
 })
 
 module.exports.app = app
