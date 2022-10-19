@@ -1,4 +1,4 @@
-# XV1-Email-API
+# XV1 Email API
 Convert HTTP traffic into a Simple Email
 
 # First Step
