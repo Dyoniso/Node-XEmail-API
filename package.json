@@ -1,0 +1,26 @@
+{
+  "name": "api-email",
+  "version": "1.0.0",
+  "description": "Simple Email API",
+  "main": "app.js",
+  "scripts": {
+    "test": "node app.js"
+  },
+  "keywords": [
+    "email",
+    "api",
+    "node",
+    "apex"
+  ],
+  "author": "7Dz",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-rate-limit": "^6.6.0",
+    "nodemailer": "^6.8.0",
+    "winston": "^3.8.2"
+  }
+}
