@@ -10,11 +10,20 @@ const cors = require('cors')
 const Logger = require('./api/utils/logger')
 const logger = new Logger('app')
 const cookieParser = require('cookie-parser')
+const rateLimit = require('express-rate-limit')
+
+const limiter = rateLimit({
+	windowMs: 15 * 60 * 1000,
+	max: 100,
+	standardHeaders: true, 
+	legacyHeaders: false, 
+})
 
 const app = express()
 app.use(cookieParser())
 app.use(express.json({ limit : '8mb' }))
 app.use(cors())
+app.use(limiter)
 
 //Env Conf
 const HTTP_PORT = process.env.HTTP_PORT

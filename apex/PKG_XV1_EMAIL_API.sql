@@ -8,6 +8,7 @@ create or replace package body PKG_XV1_EMAIL_API as
     l_endpoint varchar2(200) := 'localhost';
     l_port number := 8081;
     l_send_path varchar2(30) := '/mail/send';
+    l_api_key varchar(200) := 'your-api-key'
 
     function GET_URL return varchar2 as
     begin
@@ -18,6 +19,15 @@ create or replace package body PKG_XV1_EMAIL_API as
     begin
         return GET_URL || l_send_path;
     end;
+
+    procedure INIT_DEFAULT_HEADER is
+    begin
+        apex_web_service.set_request_headers (
+            p_name_01   =>      'X-API-KEY',
+            p_value_01  =>      standard_hash(l_api_key, 'MD5')
+        );
+
+    end INIT_DEFAULT_HEADER;
 
     procedure SEND_EMAIL(l_receiver varchar2, l_subject varchar2, l_text varchar2, l_html varchar2) 
     is

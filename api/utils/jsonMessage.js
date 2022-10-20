@@ -2,6 +2,7 @@ const ERROR_TYPE = {
     SYNTAX : 1001,
     SERVER : 5000,
     NOT_FOUND : 4004,
+    FORBIDDEN : 4008,
 }
 
 class JsonMessage {
@@ -32,6 +33,9 @@ class JsonMessage {
                 break
             case ERROR_TYPE.NOT_FOUND:
                 this.httpCode = 404;
+                break
+            case ERROR_TYPE.FORBIDDEN:
+                this.httpCode = 401;
                 break
         }
 

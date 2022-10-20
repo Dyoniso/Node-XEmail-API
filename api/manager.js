@@ -4,13 +4,27 @@ const transporter = require('../app').transporter
 const Logger = require('./utils/logger')
 const logger = new Logger('app')
 const emailChecker = require('./utils/emailChecker')
+const md5 = require('md5')
 
 const JsonMessage = require("./utils/jsonMessage")
 const { ERROR_TYPE } = require("./utils/jsonMessage")
 
 const SMTP_SENDER_EMAIL = `"${process.env.SMTP_SENDER_NAME}"<${process.env.SMTP_SENDER_EMAIL}>`
 
-app.get('/', (req, res) => {
+let X_API_KEY = process.env.X_API_KEY
+if (!X_API_KEY || X_API_KEY.length === 0) X_API_KEY = '123' //Default API KEY
+X_API_KEY = md5(X_API_KEY)
+
+const middleApiKey = (req, res, next) => {
+    const hrApiKey = req.headers['x-api-key']
+    const jm = new JsonMessage()
+
+    if (hrApiKey && hrApiKey === X_API_KEY) return next()
+    else jm.setError('Invalid API KEY', ERROR_TYPE.FORBIDDEN)
+    return res.status(jm.getStatusCode()).send(jm.getMessage()).end()
+}
+
+app.get('/', middleApiKey, (req, res) => {
     return res.send(`
         <div style="text-align:center">
             <h4> Welcome XV1-Email Api </h4>
@@ -22,7 +36,7 @@ app.get('/', (req, res) => {
     `).end()
 })
 
-app.post('/mail/send', async(req, res) => {
+app.post('/mail/send', middleApiKey, async(req, res) => {
     let receiver = req.body.receiver
     let subject = req.body.subject
     let text = req.body.text
