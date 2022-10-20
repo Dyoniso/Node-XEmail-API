@@ -21,13 +21,15 @@ create or replace package body PKG_XV1_EMAIL_API as
     end;
 
     procedure INIT_DEFAULT_HEADER is
-        key_md5 varchar2(200);
+        hashed_key varchar2(400);
     begin
-        SELECT standard_hash(l_api_key, 'MD5') INTO key_md5 FROM dual;
+        SELECT standard_hash(l_api_key, 'MD5') INTO hashed_key FROM dual;
 
-        apex_web_service.set_request_headers (
+        DBMS_OUTPUT.PUT_LINE('[Email-Request] ' || hashed_key);
+
+        apex_web_service.set_request_headers(
             p_name_01   =>      'X-API-KEY',
-            p_value_01  =>      key_md5
+            p_value_01  =>      hashed_key
         );
 
     end INIT_DEFAULT_HEADER;
@@ -35,8 +37,9 @@ create or replace package body PKG_XV1_EMAIL_API as
     procedure SEND_EMAIL(l_receiver varchar2, l_subject varchar2, l_text varchar2, l_html varchar2) 
     is
         v_res clob;
-        v_json clob;
+        v_json varchar2(4000);
     begin
+        apex_json.initialize_clob_output;
         apex_json.open_object;
         apex_json.write('receiver', l_receiver);
         apex_json.write('subject', l_subject);
@@ -55,7 +58,7 @@ create or replace package body PKG_XV1_EMAIL_API as
            p_body              => v_json
         );
 
-        DBMS_OUTPUT.PUT_LINE('[Email-Request] ' || to_char(v_res));
+        DBMS_OUTPUT.PUT_LINE('[Email-Request] ' || v_res);
     end;
 end;
       

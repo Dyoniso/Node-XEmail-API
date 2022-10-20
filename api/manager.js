@@ -13,14 +13,18 @@ const SMTP_SENDER_EMAIL = `"${process.env.SMTP_SENDER_NAME}"<${process.env.SMTP_
 
 let X_API_KEY = process.env.X_API_KEY
 if (!X_API_KEY || X_API_KEY.length === 0) X_API_KEY = '123' //Default API KEY
-X_API_KEY = md5(X_API_KEY)
+X_API_KEY = String(md5(X_API_KEY)).toUpperCase()
 
 const middleApiKey = (req, res, next) => {
-    const hrApiKey = req.headers['x-api-key']
+    let hrApiKey = req.headers['x-api-key']
     const jm = new JsonMessage()
 
-    if (hrApiKey && hrApiKey === X_API_KEY) return next()
-    else jm.setError('Invalid API KEY', ERROR_TYPE.FORBIDDEN)
+    if (hrApiKey) {
+        hrApiKey = String(hrApiKey).toUpperCase()
+        if (hrApiKey === X_API_KEY) return next()
+    } 
+
+    jm.setError('Invalid API KEY', ERROR_TYPE.FORBIDDEN)
     return res.status(jm.getStatusCode()).send(jm.getMessage()).end()
 }
 
