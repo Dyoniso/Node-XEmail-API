@@ -8,7 +8,7 @@ create or replace package body PKG_XV1_EMAIL_API as
     l_endpoint varchar2(200) := 'localhost';
     l_port number := 8081;
     l_send_path varchar2(30) := '/mail/send';
-    l_api_key varchar(200) := 'your-api-key'
+    l_api_key varchar(200) := 'your-api-key';
 
     function GET_URL return varchar2 as
     begin
@@ -21,10 +21,13 @@ create or replace package body PKG_XV1_EMAIL_API as
     end;
 
     procedure INIT_DEFAULT_HEADER is
+        key_md5 varchar2(200);
     begin
+        SELECT standard_hash(l_api_key, 'MD5') INTO key_md5 FROM dual;
+
         apex_web_service.set_request_headers (
             p_name_01   =>      'X-API-KEY',
-            p_value_01  =>      standard_hash(l_api_key, 'MD5')
+            p_value_01  =>      key_md5
         );
 
     end INIT_DEFAULT_HEADER;
@@ -43,6 +46,8 @@ create or replace package body PKG_XV1_EMAIL_API as
 
         v_json := apex_json.get_clob_output;
         apex_json.free_output;
+
+        INIT_DEFAULT_HEADER;
 
         v_res := apex_web_service.make_rest_request(
            p_url               => GET_SEND_URL,
