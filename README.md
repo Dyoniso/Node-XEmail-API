@@ -21,6 +21,9 @@ npm start .
 In order to be able to send e-mail, configure the .env file with the credentials of your e-mail server.
 
 ```
+#API
+X_API_KEY='your_key' #Access API
+
 #HTTP SERVER
 HTTP_HOST = localhost #Server Host
 HTTP_PORT = 8081 #Server Port
