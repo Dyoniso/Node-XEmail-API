@@ -25,11 +25,11 @@ create or replace package body PKG_XV1_EMAIL_API as
     begin
         SELECT standard_hash(l_api_key, 'MD5') INTO hashed_key FROM dual;
 
-        DBMS_OUTPUT.PUT_LINE('[Email-Request] ' || hashed_key);
-
         apex_web_service.set_request_headers(
             p_name_01   =>      'X-API-KEY',
-            p_value_01  =>      hashed_key
+            p_value_01  =>      hashed_key,
+            p_name_02   =>      'Content-Type',
+            p_value_02  =>      'application/json'
         );
 
     end INIT_DEFAULT_HEADER;
@@ -61,4 +61,3 @@ create or replace package body PKG_XV1_EMAIL_API as
         DBMS_OUTPUT.PUT_LINE('[Email-Request] ' || v_res);
     end;
 end;
-      
