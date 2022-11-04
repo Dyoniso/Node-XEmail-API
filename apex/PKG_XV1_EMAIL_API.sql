@@ -1,6 +1,6 @@
 create or replace package PKG_XV1_EMAIL_API as
 
-    procedure SEND_EMAIL(l_receiver varchar2, l_subject varchar2, l_text varchar2, l_html varchar2);
+    procedure SEND_EMAIL(l_receiver varchar2, l_subject varchar2, l_text varchar2, l_html clob);
 
 end;
 
@@ -34,10 +34,10 @@ create or replace package body PKG_XV1_EMAIL_API as
 
     end INIT_DEFAULT_HEADER;
 
-    procedure SEND_EMAIL(l_receiver varchar2, l_subject varchar2, l_text varchar2, l_html varchar2) 
+    procedure SEND_EMAIL(l_receiver varchar2, l_subject varchar2, l_text varchar2, l_html clob) 
     is
         v_res clob;
-        v_json varchar2(4000);
+        v_json clob;
     begin
         apex_json.initialize_clob_output;
         apex_json.open_object;
