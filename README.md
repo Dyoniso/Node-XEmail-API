@@ -1,4 +1,4 @@
-# XV1 Email API
+# Node XEmail API
 Convert HTTP traffic into a Simple Email
 
 # First Step
